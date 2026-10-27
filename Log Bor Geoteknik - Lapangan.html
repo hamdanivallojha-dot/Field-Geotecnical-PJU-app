@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Log Bor Geoteknik - Lapangan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EAEEF1; --surface:#FFFFFF; --surface2:#F3F6F8; --ink:#13222B; --muted:#56666F; --line:#C6D0D6;
+  --brand:#0B5C8A; --brand-ink:#FFFFFF; --brand-soft:#DCEBF4; --warn:#8A5A00; --warn-bg:#FFF1CF;
+  --danger:#B3261E; --ok:#1B7F4B; --water:#1E7BC4;
+  --font:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-d:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E161B; --surface:#17222A; --surface2:#1E2C35; --ink:#E6EEF2; --muted:#9AAAB4; --line:#2E3E48;
+    --brand:#5DB5E8; --brand-ink:#04202F; --brand-soft:#17384A; --warn:#F2C35B; --warn-bg:#3A2E10;
+    --danger:#FF8A80; --ok:#6FD39B; --water:#59B2F0;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E161B; --surface:#17222A; --surface2:#1E2C35; --ink:#E6EEF2; --muted:#9AAAB4; --line:#2E3E48;
+  --brand:#5DB5E8; --brand-ink:#04202F; --brand-soft:#17384A; --warn:#F2C35B; --warn-bg:#3A2E10;
+  --danger:#FF8A80; --ok:#6FD39B; --water:#59B2F0;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:400 16px/1.45 var(--font);padding-bottom:92px}
+h1,h2,h3{font-family:var(--font-d);margin:0;letter-spacing:.005em}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{max-width:880px;margin:0 auto}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line);padding:10px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.mark{width:38px;height:38px;flex:none;border-radius:8px;background:var(--brand);display:grid;place-items:center;border:0;padding:0;cursor:pointer;overflow:hidden}
+.mark.has{background:transparent}
+.mark img{width:100%;height:100%;object-fit:contain}
+.rep-brand{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.rep-brand img{height:52px;max-width:180px;object-fit:contain}
+.rep-brand b{font:700 21px var(--font-d)}
+.mark svg{width:20px;height:20px;stroke:var(--brand-ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.top h1{font-size:20px;line-height:1.1;font-weight:700}
+.top .sub{margin:0;font-size:12.5px;color:var(--muted)}
+.holebar{display:flex;gap:8px;align-items:center;flex:1 1 220px;justify-content:flex-end}
+.holebar select{flex:1 1 120px;min-width:0;max-width:260px}
+
+/* layout */
+main{padding:14px}
+.panel{display:none}
+.panel.on{display:block}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:14px}
+.card>h2{font-size:18px;font-weight:600;margin-bottom:2px}
+.card>.hint{margin:0 0 12px;color:var(--muted);font-size:14px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid .full{grid-column:1/-1}
+@media (max-width:520px){.grid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid.mob1{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field>span{font-size:13.5px;font-weight:500;color:var(--muted)}
+input,select,textarea{width:100%;min-height:46px;padding:9px 11px;border:1.5px solid var(--line);border-radius:8px;background:var(--surface2);font-size:16px}
+textarea{min-height:76px;resize:vertical}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid var(--brand);outline-offset:1px;border-color:var(--brand)}
+.num{font-family:var(--font-d);font-weight:600;font-variant-numeric:tabular-nums;font-size:20px;text-align:center}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row.end{justify-content:flex-end}
+.btn{min-height:44px;padding:8px 16px;border-radius:8px;border:1.5px solid var(--brand);background:var(--brand);color:var(--brand-ink);font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--brand)}
+.btn.danger{background:transparent;border-color:var(--danger);color:var(--danger)}
+.btn.sm{min-height:38px;padding:5px 12px;font-size:14.5px}
+.btn:active{transform:translateY(1px)}
+.inline{display:flex;gap:8px;align-items:stretch}
+.inline input{flex:1}
+
+/* live result */
+.live{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:12px;border-radius:10px;background:var(--brand-soft);margin:12px 0}
+.live .big{font-family:var(--font-d);font-weight:700;font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+.live small{display:block;color:var(--muted);font-size:13px}
+.live .meta{flex:1 1 180px;font-size:14.5px}
+.note{padding:9px 12px;border-radius:8px;background:var(--warn-bg);color:var(--warn);font-size:14px;margin:10px 0}
+.note[hidden]{display:none}
+
+/* lists */
+.list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.item{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface2)}
+.item.editing{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand-soft)}
+.item .main{min-width:0;flex:1}
+.item .t{font-family:var(--font-d);font-weight:600;font-size:17px}
+.item .d{font-size:14px;color:var(--muted);overflow-wrap:anywhere}
+.item .acts{display:flex;gap:6px;flex:none}
+.chip{display:inline-block;min-width:38px;text-align:center;padding:1px 8px;border-radius:6px;font-weight:700;font-family:var(--font-d);color:#1b1b1b;margin-right:8px}
+.empty{padding:16px;text-align:center;color:var(--muted);border:1.5px dashed var(--line);border-radius:8px;font-size:14.5px}
+dl.std{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:14.5px}
+dl.std dt{font-weight:600;font-family:var(--font-d)}
+dl.std dd{margin:0;color:var(--muted)}
+
+/* bottom nav */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding:0 0 env(safe-area-inset-bottom,0px)}
+.tabs .in{display:flex;width:100%;max-width:880px}
+.tabs button{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:0;color:var(--muted);font-size:12.5px;font-weight:600;cursor:pointer;border-top:3px solid transparent}
+.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tabs button[aria-selected="true"]{color:var(--brand);border-top-color:var(--brand)}
+
+/* modal + toast */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(5,15,20,.55);display:flex;align-items:flex-end;justify-content:center;padding:0}
+.modal[hidden]{display:none}
+.sheet{width:100%;max-width:640px;background:var(--surface);border-radius:14px 14px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:90%;overflow:auto}
+@media (min-width:700px){.modal{align-items:center}.sheet{border-radius:14px}}
+.sheet h3{font-size:19px;margin-bottom:8px}
+.sheet textarea{min-height:200px;font:13px/1.4 ui-monospace,Menlo,Consolas,monospace}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14.5px;z-index:60;max-width:90%;text-align:center}
+.toast[hidden]{display:none}
+.status{font-size:12.5px;color:var(--muted)}
+.status.bad{color:var(--danger)}
+
+/* report */
+.rep-head{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 18px;font-size:14.5px}
+.rep-head div{display:flex;gap:8px;border-bottom:1px solid var(--line);padding:3px 0}
+.rep-head b{min-width:108px;color:var(--muted);font-weight:500}
+@media (max-width:560px){.rep-head{grid-template-columns:1fr}}
+.scroll{overflow-x:auto;max-width:100%}
+.scroll svg{display:block;min-width:700px;width:100%;height:auto}
+.svgt{fill:var(--ink);font:500 11px var(--font)}
+.svgm{fill:var(--muted);font:500 10.5px var(--font)}
+table.t{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+table.t th,table.t td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+table.t th{background:var(--surface2);font-family:var(--font-d);font-weight:600}
+.sig{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:26px;font-size:14px}
+.sig div{border-top:1px solid var(--ink);padding-top:4px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted);margin:8px 0}
+.legend i{display:inline-block;width:14px;height:14px;border:1px solid var(--ink);vertical-align:-2px;margin-right:5px}
+
+.ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
+.ph{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--line);border-radius:8px;background:var(--surface2);overflow:hidden;cursor:pointer}
+.ph img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--line);display:block}
+.ph .pt{font:600 14px var(--font-d);padding:6px 8px 0}
+.ph .pd{font-size:12.5px;color:var(--muted);padding:0 8px 8px;overflow-wrap:anywhere}
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
+.chk{display:flex;gap:10px;align-items:center;min-height:44px;margin-top:8px}
+.chk input{width:24px;min-height:24px;flex:none}
+.rep-ph{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.rep-ph.sm{grid-template-columns:repeat(3,minmax(0,1fr))}
+.rep-ph figure{margin:0;break-inside:avoid}
+.rep-ph img{width:100%;display:block;border:1px solid var(--line);border-radius:6px;background:var(--line);min-height:60px}
+.rep-ph figcaption{font-size:12.5px;margin-top:3px}
+@media (max-width:560px){.rep-ph{grid-template-columns:1fr}.rep-ph.sm{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:430px){.tabs button{font-size:11px}}
+.bigph{width:100%;max-height:62vh;object-fit:contain;border-radius:8px;background:var(--surface2);display:block}
+@media print{
+  :root{--bg:#fff;--surface:#fff;--surface2:#fff;--ink:#000;--muted:#333;--line:#999}
+  body{padding:0;background:#fff}
+  .top,.tabs,.noprint,.toast,.modal{display:none!important}
+  .panel{display:none!important}
+  #p-log{display:block!important}
+  main{padding:0}
+  .card{border:0;padding:0;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <button class="mark" id="logoBtn" type="button" aria-label="Ganti logo" title="Ganti logo"><svg viewBox="0 0 24 24"><path d="M12 2v14M8 6h8M9 16l3 5 3-5"/></svg></button>
+      <div>
+        <h1>Log Bor Lapangan</h1>
+        <p class="sub" id="status">Memuat...</p>
+      </div>
+    </div>
+    <div class="holebar">
+      <select id="holeSel" aria-label="Pilih lubang bor"></select>
+      <button class="btn sm" id="addHole" type="button">Lubang baru</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- PROYEK -->
+    <section class="panel on" id="p-proyek">
+      <div class="card">
+        <h2>Identitas lubang bor</h2>
+        <p class="hint">Isi sekali di awal. Data tersimpan otomatis di perangkat ini.</p>
+        <div class="grid mob1">
+          <label class="field full"><span>Nama proyek</span><input data-k="proyek" autocomplete="off"></label>
+          <label class="field full"><span>Lokasi</span><input data-k="lokasi" autocomplete="off"></label>
+          <label class="field"><span>No. lubang bor</span><input data-k="bh" autocomplete="off" placeholder="BH-01"></label>
+          <label class="field"><span>Elevasi muka tanah (m)</span><input data-k="elevasi" inputmode="decimal"></label>
+          <label class="field full"><span>Koordinat</span>
+            <div class="inline"><input data-k="koordinat" id="koord" placeholder="Lat, Long atau E, N"><button class="btn ghost sm" id="gps" type="button">Ambil GPS</button></div>
+          </label>
+          <label class="field"><span>Tanggal mulai</span><input type="date" data-k="mulai"></label>
+          <label class="field"><span>Tanggal selesai</span><input type="date" data-k="selesai"></label>
+          <label class="field"><span>Pengebor (driller)</span><input data-k="pengebor" autocomplete="off"></label>
+          <label class="field"><span>Logger / geologis</span><input data-k="logger" autocomplete="off"></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Peralatan dan metode</h2>
+        <p class="hint">Standar uji SPT (D1586): palu 63,5 kg, tinggi jatuh 760 mm.</p>
+        <div class="grid mob1">
+          <label class="field"><span>Rig bor</span><input data-k="rig" autocomplete="off"></label>
+          <label class="field"><span>Metode pengeboran</span>
+            <select data-k="metode">
+              <option>Wash boring</option><option>Hollow-stem auger</option><option>Solid-stem auger</option>
+              <option>Rotary core drilling</option><option>Hand auger</option><option>Lainnya</option>
+            </select>
+          </label>
+          <label class="field"><span>Diameter lubang (mm)</span><input data-k="diameter" inputmode="decimal"></label>
+          <label class="field"><span>Casing / lumpur bor</span><input data-k="casing" autocomplete="off"></label>
+          <label class="field"><span>Tipe palu SPT</span>
+            <select data-k="hammer"><option>Donut</option><option>Safety</option><option>Automatic trip</option></select>
+          </label>
+          <label class="field"><span>Efisiensi energi ER (%)</span><input data-k="er" inputmode="decimal"></label>
+          <label class="field"><span>Berat palu (kg)</span><input data-k="berat" inputmode="decimal"></label>
+          <label class="field"><span>Tinggi jatuh (mm)</span><input data-k="tinggi" inputmode="decimal"></label>
+          <label class="field full"><span>Kedalaman akhir bor (m)</span><input data-k="total" inputmode="decimal"></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Muka air tanah</h2>
+        <p class="hint">Catat kedalaman air setiap kali diamati.</p>
+        <div class="grid mob1">
+          <label class="field"><span>Kedalaman air (m)</span><input id="gw-d" inputmode="decimal"></label>
+          <label class="field"><span>Waktu pengamatan</span>
+            <select id="gw-c"><option>Saat pengeboran</option><option>Setelah pengeboran selesai</option><option>Setelah 24 jam</option><option>Lainnya</option></select>
+          </label>
+          <label class="field full"><span>Catatan</span><input id="gw-n" autocomplete="off"></label>
+        </div>
+        <div class="row end" style="margin-top:10px"><button class="btn" id="gw-add" type="button">Tambah pengamatan</button></div>
+        <div class="list" id="gw-list"></div>
+      </div>
+
+      <div class="card">
+        <h2>Acuan standar</h2>
+        <dl class="std">
+          <dt>D1586</dt><dd>Uji penetrasi standar (SPT) dan sampling split-barrel</dd>
+          <dt>D2488</dt><dd>Deskripsi dan identifikasi tanah, prosedur visual-manual</dd>
+          <dt>D2487</dt><dd>Klasifikasi tanah USCS</dd>
+          <dt>D1587</dt><dd>Sampel tabung berdinding tipis (Shelby)</dd>
+          <dt>D2113</dt><dd>Pengeboran inti batuan</dd>
+          <dt>D6032</dt><dd>Perhitungan RQD</dd>
+        </dl>
+      </div>
+    </section>
+
+    <!-- SPT -->
+    <section class="panel" id="p-spt">
+      <div class="card">
+        <h2>Uji SPT</h2>
+        <p class="hint">Catat pukulan per interval 15 cm. N adalah jumlah pukulan 15 cm kedua dan ketiga.</p>
+        <div class="grid mob1">
+          <label class="field"><span>Kedalaman awal uji (m)</span><input id="spt-depth" inputmode="decimal"></label>
+          <label class="field"><span>Sampler</span>
+            <select id="spt-sampler"><option>Split spoon standar (OD 50 mm)</option><option>Split spoon tanpa liner</option><option>Sampler lain</option></select>
+          </label>
+        </div>
+        <div class="grid g3" style="margin-top:12px">
+          <label class="field"><span>0 - 15 cm</span><input class="num" id="spt-b1" inputmode="numeric"></label>
+          <label class="field"><span>15 - 30 cm</span><input class="num" id="spt-b2" inputmode="numeric"></label>
+          <label class="field"><span>30 - 45 cm</span><input class="num" id="spt-b3" inputmode="numeric"></label>
+        </div>
+        <label class="row" style="margin-top:12px;gap:10px;min-height:44px">
+          <input type="checkbox" id="spt-ref" style="width:24px;min-height:24px;flex:none">
+          <span>Refusal: 50 pukulan tanpa menembus 15 cm penuh</span>
+        </label>
+        <div class="grid mob1" id="spt-refbox" hidden style="margin-top:6px">
+          <label class="field"><span>Penetrasi saat 50 pukulan (cm)</span><input id="spt-refpen" inputmode="decimal"></label>
+        </div>
+        <div class="grid mob1" style="margin-top:12px">
+          <label class="field"><span>Recovery sampel (cm)</span><input id="spt-rec" inputmode="decimal"></label>
+          <label class="field"><span>Catatan</span><input id="spt-note" autocomplete="off"></label>
+        </div>
+        <div class="live" aria-live="polite">
+          <div><small>N-SPT</small><div class="big" id="spt-N">-</div></div>
+          <div><small>N60</small><div class="big" id="spt-N60">-</div></div>
+          <div class="meta" id="spt-hint">Masukkan jumlah pukulan.</div>
+        </div>
+        <div class="note" id="spt-warn" hidden></div>
+        <div class="row end">
+          <button class="btn ghost" id="spt-cancel" type="button" hidden>Batal edit</button>
+          <button class="btn" id="spt-save" type="button">Simpan uji SPT</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Hasil SPT</h2>
+        <div class="list" id="spt-list"></div>
+      </div>
+    </section>
+
+    <!-- TANAH -->
+    <section class="panel" id="p-soil">
+      <div class="card">
+        <h2>Deskripsi lapisan tanah</h2>
+        <p class="hint">Visual-manual (D2488), simbol kelompok USCS (D2487).</p>
+        <div class="grid mob1">
+          <label class="field"><span>Dari (m)</span><input id="s-from" inputmode="decimal"></label>
+          <label class="field"><span>Sampai (m)</span><input id="s-to" inputmode="decimal"></label>
+          <label class="field full"><span>Simbol kelompok USCS</span><select id="s-uscs"></select></label>
+          <div class="full" id="s-name" style="font-weight:600;font-family:var(--font-d);margin-top:-6px;color:var(--brand)"></div>
+          <label class="field"><span>Warna</span><input id="s-color" list="colors" autocomplete="off"></label>
+          <label class="field"><span>Konsistensi / kepadatan</span><select id="s-cons"></select></label>
+          <label class="field"><span>Kelembapan</span><select id="s-moist"></select></label>
+          <label class="field"><span>Plastisitas (tanah halus)</span><select id="s-plast"></select></label>
+        </div>
+        <datalist id="colors"></datalist>
+        <div class="grid g3" style="margin-top:12px">
+          <label class="field"><span>% kerikil</span><input class="num" id="s-g" inputmode="numeric"></label>
+          <label class="field"><span>% pasir</span><input class="num" id="s-s" inputmode="numeric"></label>
+          <label class="field"><span>% halus</span><input class="num" id="s-f" inputmode="numeric"></label>
+        </div>
+        <div class="grid mob1" style="margin-top:12px">
+          <label class="field"><span>Pocket penetrometer (kg/cm²)</span><input id="s-pp" inputmode="decimal"></label>
+          <label class="field"><span>Catatan (bau, sementasi, inklusi, dll.)</span><input id="s-note" autocomplete="off"></label>
+        </div>
+        <div class="note" id="s-warn" hidden></div>
+        <div class="row end" style="margin-top:10px">
+          <button class="btn ghost" id="s-cancel" type="button" hidden>Batal edit</button>
+          <button class="btn" id="s-save" type="button">Simpan lapisan</button>
+        </div>
+      </div>
+      <div class="card"><h2>Lapisan tercatat</h2><div class="list" id="s-list"></div></div>
+
+      <div class="card">
+        <h2>Sampel tabung (Shelby)</h2>
+        <p class="hint">Sampel tak terganggu, ASTM D1587.</p>
+        <div class="grid mob1">
+          <label class="field"><span>Kedalaman atas (m)</span><input id="u-depth" inputmode="decimal"></label>
+          <label class="field"><span>Diameter tabung</span><select id="u-dia"><option>76 mm (3 in)</option><option>51 mm (2 in)</option><option>Lainnya</option></select></label>
+          <label class="field"><span>Panjang tekan (cm)</span><input id="u-push" inputmode="decimal"></label>
+          <label class="field"><span>Recovery (cm)</span><input id="u-rec" inputmode="decimal"></label>
+          <label class="field full"><span>Catatan</span><input id="u-note" autocomplete="off"></label>
+        </div>
+        <div class="row end" style="margin-top:10px">
+          <button class="btn ghost" id="u-cancel" type="button" hidden>Batal edit</button>
+          <button class="btn" id="u-save" type="button">Simpan sampel</button>
+        </div>
+        <div class="list" id="u-list"></div>
+      </div>
+    </section>
+
+    <!-- BATUAN -->
+    <section class="panel" id="p-core">
+      <div class="card">
+        <h2>Pengeboran inti batuan</h2>
+        <p class="hint">ASTM D2113 dan D6032. Isi panjang tiap potongan inti (cm) dipisah koma, RQD dihitung otomatis dari potongan 10 cm atau lebih.</p>
+        <div class="grid mob1">
+          <label class="field"><span>Run dari (m)</span><input id="c-from" inputmode="decimal"></label>
+          <label class="field"><span>Run sampai (m)</span><input id="c-to" inputmode="decimal"></label>
+          <label class="field full"><span>Jenis batuan</span><input id="c-type" autocomplete="off" placeholder="mis. Andesit, batupasir"></label>
+          <label class="field full"><span>Panjang potongan inti (cm), pisahkan dengan koma</span><textarea id="c-pieces" inputmode="decimal" placeholder="12, 8, 25, 30, 6, 14"></textarea></label>
+          <label class="field"><span>Recovery total (cm), kosongkan untuk jumlah potongan</span><input id="c-rec" inputmode="decimal"></label>
+          <label class="field"><span>Jumlah rekahan alami</span><input id="c-frac" inputmode="numeric"></label>
+          <label class="field"><span>Pelapukan</span><select id="c-weath"></select></label>
+          <label class="field"><span>Kekuatan batuan</span><select id="c-str"></select></label>
+          <label class="field full"><span>Catatan (diskontinuitas, warna, air sirkulasi hilang, dll.)</span><input id="c-note" autocomplete="off"></label>
+        </div>
+        <div class="live" aria-live="polite">
+          <div><small>RQD</small><div class="big" id="c-rqd">-</div></div>
+          <div><small>Recovery</small><div class="big" id="c-recp">-</div></div>
+          <div class="meta" id="c-hint">Isi panjang run dan potongan inti.</div>
+        </div>
+        <div class="row end">
+          <button class="btn ghost" id="c-cancel" type="button" hidden>Batal edit</button>
+          <button class="btn" id="c-save" type="button">Simpan run inti</button>
+        </div>
+      </div>
+      <div class="card"><h2>Run inti tercatat</h2><div class="list" id="c-list"></div></div>
+    </section>
+
+    <!-- FOTO -->
+    <section class="panel" id="p-photo">
+      <div class="note" id="ph-note" hidden>Penyimpanan foto di browser ini tidak tersedia. Foto hanya tersimpan sementara dan hilang saat halaman ditutup. Simpan foto penting ke galeri HP.</div>
+
+      <div class="card">
+        <h2>Foto core box</h2>
+        <p class="hint">Foto setiap box inti bor. Label otomatis (proyek, lubang, nomor box, interval kedalaman) dicetak di foto.</p>
+        <div class="grid mob1">
+          <label class="field"><span>No. box</span><input id="cb-no" inputmode="numeric"></label>
+          <label class="field"><span>Kondisi core</span><select id="cb-cond"><option value="Basah">Basah (wet)</option><option value="Kering">Kering (dry)</option><option value="">Tidak dicatat</option></select></label>
+          <label class="field"><span>Kedalaman dari (m)</span><input id="cb-from" inputmode="decimal"></label>
+          <label class="field"><span>Kedalaman sampai (m)</span><input id="cb-to" inputmode="decimal"></label>
+          <label class="field full"><span>Keterangan</span><input id="cb-cap" autocomplete="off" placeholder="mis. core hilang 5,20 - 5,40 m"></label>
+        </div>
+        <label class="chk"><input type="checkbox" id="cb-stamp" checked><span>Cetak label pada foto</span></label>
+        <div class="note" id="cb-hint" hidden></div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="cb-cam" type="button">Ambil foto</button>
+          <button class="btn ghost" id="cb-gal" type="button">Pilih dari galeri</button>
+          <button class="btn ghost" id="cb-next" type="button">Box berikutnya</button>
+        </div>
+        <input class="vh" type="file" accept="image/*" capture="environment" id="cb-fcam" tabindex="-1" aria-hidden="true">
+        <input class="vh" type="file" accept="image/*" multiple id="cb-fgal" tabindex="-1" aria-hidden="true">
+      </div>
+      <div class="card"><h2>Foto core box tersimpan <span id="cb-count"></span></h2><div class="ph-grid" id="cb-grid"></div></div>
+
+      <div class="card">
+        <h2>Foto aktivitas</h2>
+        <p class="hint">Dokumentasi kegiatan lapangan: pengeboran, sampling, lokasi titik, kondisi tanah, keselamatan.</p>
+        <div class="grid mob1">
+          <label class="field"><span>Kategori</span>
+            <select id="ac-cat"><option>Pengeboran</option><option>Pengambilan sampel / SPT</option><option>Lokasi / titik bor</option><option>Rig dan peralatan</option><option>Muka air tanah</option><option>Kondisi lapangan</option><option>Keselamatan (K3)</option><option>Lainnya</option></select>
+          </label>
+          <label class="field"><span>Kedalaman (m), opsional</span><input id="ac-depth" inputmode="decimal"></label>
+          <label class="field full"><span>Keterangan</span><input id="ac-cap" autocomplete="off"></label>
+        </div>
+        <label class="chk"><input type="checkbox" id="ac-stamp" checked><span>Cetak label dan waktu pada foto</span></label>
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="ac-cam" type="button">Ambil foto</button>
+          <button class="btn ghost" id="ac-gal" type="button">Pilih dari galeri</button>
+        </div>
+        <input class="vh" type="file" accept="image/*" capture="environment" id="ac-fcam" tabindex="-1" aria-hidden="true">
+        <input class="vh" type="file" accept="image/*" multiple id="ac-fgal" tabindex="-1" aria-hidden="true">
+      </div>
+      <div class="card">
+        <h2>Foto aktivitas tersimpan <span id="ac-count"></span></h2>
+        <div class="ph-grid" id="ac-grid"></div>
+        <p class="hint" style="margin:12px 0 0">Foto disimpan di perangkat ini dan tidak ikut teks cadangan. Buka foto lalu ketuk Simpan / bagikan untuk menyimpannya ke galeri.</p>
+      </div>
+    </section>
+
+    <!-- LOG -->
+    <section class="panel" id="p-log">
+      <div class="card">
+        <div class="row noprint" style="justify-content:space-between;margin-bottom:10px">
+          <h2>Log bor</h2>
+          <div class="row">
+            <label class="row" style="gap:6px;font-size:14px"><input type="checkbox" id="b-ph" checked style="width:20px;min-height:20px">Foto di laporan</label>
+            <button class="btn sm ghost" id="b-print" type="button">Cetak</button>
+            <button class="btn sm ghost" id="b-csv" type="button">Ekspor CSV</button>
+            <button class="btn sm ghost" id="b-json" type="button">Cadangan / pulihkan</button>
+          </div>
+        </div>
+        <div id="report"></div>
+      </div>
+      <div class="card noprint">
+        <h2>Tampilan</h2>
+        <div class="row" style="margin-top:6px">
+          <button class="btn sm ghost" data-theme-set="auto" type="button">Otomatis</button>
+          <button class="btn sm ghost" data-theme-set="light" type="button">Terang (siang hari)</button>
+          <button class="btn sm ghost" data-theme-set="dark" type="button">Gelap</button>
+        </div>
+        <p class="hint" style="margin:10px 0 0">Hapus data lubang aktif:</p>
+        <div class="row" style="margin-top:6px"><button class="btn sm danger" id="delHole" type="button">Hapus lubang bor ini</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="tabs" aria-label="Menu utama"><div class="in" role="tablist">
+  <button role="tab" data-tab="proyek" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M9 4h6v3H9zM7 5.5H5V21h14V5.5h-2M9 12h6M9 16h6"/></svg>Proyek</button>
+  <button role="tab" data-tab="spt" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>SPT</button>
+  <button role="tab" data-tab="soil" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M3 8l9-4 9 4-9 4zM3 12.5l9 4 9-4M3 17l9 4 9-4"/></svg>Tanah</button>
+  <button role="tab" data-tab="core" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>Batuan</button>
+  <button role="tab" data-tab="photo" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4zM12 17a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg>Foto</button>
+  <button role="tab" data-tab="log" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6zM14 3v5h5M9 13h7M9 17h7"/></svg>Log</button>
+</div></nav>
+
+<div class="modal" id="modal" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="m-title">
+  <h3 id="m-title"></h3><div id="m-body"></div><div class="row end" id="m-acts" style="margin-top:12px"></div>
+</div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+window.addEventListener('error',function(e){
+  try{
+    var b=document.getElementById('errbar');
+    if(!b){b=document.createElement('div');b.id='errbar';b.setAttribute('role','alert');b.style.cssText='position:fixed;left:8px;right:8px;top:8px;z-index:99;background:#B3261E;color:#fff;padding:10px 12px;border-radius:8px;font:14px/1.4 sans-serif';document.body.appendChild(b)}
+    b.textContent='Terjadi error: '+(e.message||'tidak diketahui')+(e.lineno?' (baris '+e.lineno+')':'')+'. Tutup halaman lalu buka lagi; jika berulang, kirim pesan ini ke pengembang. Ketuk untuk menutup.';
+    b.onclick=function(){b.remove()};
+  }catch(x){}
+});
+</script>
+<script>
+(function(){
+"use strict";
+
+/* ---------- reference data ---------- */
+var USCS = {
+ 'GW':['Well-graded gravel','gravel'],'GP':['Poorly graded gravel','gravel'],
+ 'GW-GM':['Well-graded gravel with silt','gravel'],'GW-GC':['Well-graded gravel with clay','gravel'],
+ 'GP-GM':['Poorly graded gravel with silt','gravel'],'GP-GC':['Poorly graded gravel with clay','gravel'],
+ 'GM':['Silty gravel','gravel'],'GC':['Clayey gravel','gravel'],'GC-GM':['Silty, clayey gravel','gravel'],
+ 'SW':['Well-graded sand','sand'],'SP':['Poorly graded sand','sand'],
+ 'SW-SM':['Well-graded sand with silt','sand'],'SW-SC':['Well-graded sand with clay','sand'],
+ 'SP-SM':['Poorly graded sand with silt','sand'],'SP-SC':['Poorly graded sand with clay','sand'],
+ 'SM':['Silty sand','sand'],'SC':['Clayey sand','sand'],'SC-SM':['Silty, clayey sand','sand'],
+ 'ML':['Silt','silt'],'MH':['Elastic silt','silt'],
+ 'CL':['Lean clay','clay'],'CL-ML':['Silty clay','clay'],'CH':['Fat clay','clay'],
+ 'OL':['Organic silt / clay (low plasticity)','organic'],'OH':['Organic silt / clay (high plasticity)','organic'],
+ 'PT':['Peat','peat']
+};
+var FILL = {gravel:'#D8B56A',sand:'#F2DC8C',silt:'#C3C9A6',clay:'#B98B6A',organic:'#8A8556',peat:'#6A5640',rock:'#A3ADB5'};
+var GROUP_LABEL = {gravel:'Gravel (G)',sand:'Sand (S)',silt:'Silt (M)',clay:'Clay (C)',organic:'Organic (O/PT)',rock:'Rock core'};
+var MOIST=[['Dry','Kering'],['Moist','Lembap'],['Wet','Basah / jenuh']];
+var PLAST=[['','-'],['Nonplastic','Tidak plastis'],['Low','Rendah'],['Medium','Sedang'],['High','Tinggi']];
+var CONS_FINE=[['','-'],['Very soft','Very soft: ibu jari menembus >25 mm'],['Soft','Soft: menembus sekitar 25 mm'],['Firm','Firm: menembus sekitar 6 mm'],['Hard','Hard: hanya tergores kuku'],['Very hard','Very hard: kuku tak membekas']];
+var CONS_COARSE=[['','-'],['Very loose','Very loose (sangat lepas)'],['Loose','Loose (lepas)'],['Medium dense','Medium dense (sedang)'],['Dense','Dense (padat)'],['Very dense','Very dense (sangat padat)']];
+var COLORS=['Brown','Dark brown','Light brown','Reddish brown','Yellowish brown','Gray','Dark gray','Light gray','Bluish gray','Greenish gray','Black','Red','Yellow','White','Olive','Mottled'];
+var WEATH=[['Fresh','Fresh (segar)'],['Slightly weathered','Slightly weathered (lapuk ringan)'],['Moderately weathered','Moderately weathered (lapuk sedang)'],['Highly weathered','Highly weathered (lapuk tinggi)'],['Completely weathered','Completely weathered (lapuk sempurna)']];
+var STR=[['','-'],['R0','R0 extremely weak (<1 MPa)'],['R1','R1 very weak (1-5 MPa)'],['R2','R2 weak (5-25 MPa)'],['R3','R3 medium strong (25-50 MPa)'],['R4','R4 strong (50-100 MPa)'],['R5','R5 very strong (100-250 MPa)'],['R6','R6 extremely strong (>250 MPa)']];
+
+/* ---------- helpers ---------- */
+var KEY='geobor.v1';
+function $(s,r){return (r||document).querySelector(s)}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+function uid(){return Math.random().toString(36).slice(2,9)}
+function today(){return new Date().toISOString().slice(0,10)}
+function num(s){if(s===null||s===undefined)return null;s=String(s).trim().replace(',','.');if(s==='')return null;var n=parseFloat(s);return isFinite(n)?n:null}
+function f2(n){return n===null||n===undefined?'-':(Math.round(n*100)/100).toFixed(2)}
+function f1(n){return n===null||n===undefined?'-':(Math.round(n*10)/10).toFixed(1)}
+function esc(s){return String(s===null||s===undefined?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s}
+function opts(arr){return arr.map(function(o){return '<option value="'+esc(o[0])+'">'+esc(o[1])+'</option>'}).join('')}
+
+/* ---------- state ---------- */
+function newHole(){
+  return {id:uid(),
+    meta:{proyek:'',lokasi:'',bh:'BH-01',koordinat:'',elevasi:'',mulai:today(),selesai:'',pengebor:'',logger:'',rig:'',metode:'Wash boring',diameter:'',casing:'',hammer:'Donut',er:'60',berat:'63.5',tinggi:'760',total:''},
+    spt:[],soil:[],tube:[],core:[],gw:[]};
+}
+var db;
+function load(){
+  try{var v=JSON.parse(localStorage.getItem(KEY));if(v&&v.holes&&v.holes.length){return v}}catch(e){}
+  var h=newHole();return {active:h.id,holes:[h]};
+}
+var saveOK=true;
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(db));saveOK=true}catch(e){saveOK=false}
+  setStatus();
+}
+function cur(){var h=db.holes.filter(function(x){return x.id===db.active})[0];if(!h){h=db.holes[0];db.active=h.id}if(!h.photos)h.photos=[];return h}
+function setStatus(){
+  var el=$('#status');
+  if(saveOK){el.textContent='Tersimpan otomatis di perangkat';el.className='sub status'}
+  else{el.textContent='Penyimpanan diblokir. Salin cadangan sebelum menutup.';el.className='sub status bad'}
+}
+var toastT;
+function toast(msg){var t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){t.hidden=true},2600)}
+
+/* modal */
+function openModal(title,bodyHTML,actions){
+  $('#m-title').textContent=title;$('#m-body').innerHTML=bodyHTML;
+  var a=$('#m-acts');a.innerHTML='';
+  actions.forEach(function(x){var b=document.createElement('button');b.type='button';b.className='btn '+(x.cls||'');b.textContent=x.label;b.onclick=function(){var keep=x.fn&&x.fn();if(keep!==true)closeModal()};a.appendChild(b)});
+  $('#modal').hidden=false;
+}
+function closeModal(){$('#modal').hidden=true}
+$('#modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+function ask(msg,okLabel,cb){openModal('Konfirmasi','<p style="margin:0">'+esc(msg)+'</p>',[{label:'Batal',cls:'ghost'},{label:okLabel||'Ya',cls:'danger',fn:cb}])}
+
+/* ---------- calculations ---------- */
+function sptCalc(t,er){
+  var b1=num(t.b1),b2=num(t.b2),b3=num(t.b3);
+  var N=(b2||0)+(b3||0);
+  var ref=!!t.ref;
+  var nPlot=ref?50:N;
+  var n60=ref?null:N*(er||60)/60;
+  var label=ref?('R 50/'+(t.refpen!==''&&t.refpen!==undefined?t.refpen:'?')+' cm'):String(N);
+  return {N:N,ref:ref,nPlot:nPlot,n60:n60,label:label,total:(b1||0)+(b2||0)+(b3||0)};
+}
+function sandDens(n){return n<4?'Very loose':n<10?'Loose':n<30?'Medium dense':n<50?'Dense':'Very dense'}
+function clayCons(n){return n<2?'Very soft':n<4?'Soft':n<8?'Medium':n<15?'Stiff':n<30?'Very stiff':'Hard'}
+function coreCalc(c){
+  var run=(num(c.to)!==null&&num(c.from)!==null)?(num(c.to)-num(c.from))*100:null;
+  var pieces=String(c.pieces||'').split(/[\s,;+]+/).map(num).filter(function(x){return x!==null&&x>0});
+  var sum=pieces.reduce(function(a,b){return a+b},0);
+  var recIn=num(c.rec);
+  var rec=recIn!==null?recIn:(pieces.length?sum:null);
+  var rqdLen=pieces.filter(function(p){return p>=10}).reduce(function(a,b){return a+b},0);
+  return {run:run,rec:rec,n:pieces.length,sum:sum,
+    recPct:(run>0&&rec!==null)?Math.min(100,rec/run*100):null,
+    rqd:(run>0&&pieces.length)?Math.min(100,rqdLen/run*100):null};
+}
+function rqdClass(r){return r===null?'':r<25?'Very poor':r<50?'Poor':r<75?'Fair':r<90?'Good':'Excellent'}
+function isFine(sym){var g=USCS[sym];return !!g&&(g[1]==='silt'||g[1]==='clay'||g[1]==='organic')}
+function describe(s){
+  var u=USCS[s.uscs];var a=[];
+  if(s.cons)a.push(s.cons);
+  if(s.color)a.push(s.color.toLowerCase());
+  if(u)a.push(u[0].toLowerCase()+' ('+s.uscs+')');
+  var t=cap(a.join(', '));var ex=[];
+  if(s.moist)ex.push(s.moist.toLowerCase());
+  if(s.plast&&isFine(s.uscs))ex.push(s.plast.toLowerCase()+' plasticity');
+  var p=[];
+  if(s.g!=='')p.push(s.g+'% gravel');if(s.s!=='')p.push(s.s+'% sand');if(s.f!=='')p.push(s.f+'% fines');
+  if(p.length)ex.push(p.join(', '));
+  if(s.pp!=='')ex.push('PP '+s.pp+' kg/cm2');
+  return t+(ex.length?'; '+ex.join('; '):'')+(s.note?'. '+cap(s.note):'');
+}
+function sortBy(arr,key){arr.sort(function(a,b){return (num(a[key])||0)-(num(b[key])||0)})}
+
+/* ---------- tabs ---------- */
+var curTab='proyek';
+function showTab(t){
+  curTab=t;
+  $$('.panel').forEach(function(p){p.classList.toggle('on',p.id==='p-'+t)});
+  $$('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.tab===t?'true':'false')});
+  if(t==='log')renderReport();if(t==='photo')renderPhotos();
+  window.scrollTo(0,0);
+}
+$$('.tabs button').forEach(function(b){b.addEventListener('click',function(){showTab(b.dataset.tab)})});
+
+/* ---------- hole selector ---------- */
+function renderHoles(){
+  var sel=$('#holeSel');
+  sel.innerHTML=db.holes.map(function(h){return '<option value="'+h.id+'">'+esc(h.meta.bh||'Tanpa nama')+'</option>'}).join('');
+  sel.value=db.active;
+}
+$('#holeSel').addEventListener('change',function(){db.active=this.value;save();fillAll();resetForms()});
+$('#addHole').addEventListener('click',function(){
+  var h=newHole();var n=db.holes.length+1;h.meta.bh='BH-'+(n<10?'0'+n:n);
+  var c=cur().meta;h.meta.proyek=c.proyek;h.meta.lokasi=c.lokasi;h.meta.pengebor=c.pengebor;h.meta.logger=c.logger;h.meta.rig=c.rig;h.meta.metode=c.metode;h.meta.hammer=c.hammer;h.meta.er=c.er;
+  db.holes.push(h);db.active=h.id;save();fillAll();resetForms();showTab('proyek');toast('Lubang baru dibuat');
+});
+$('#delHole').addEventListener('click',function(){
+  var h=cur();
+  ask('Hapus '+(h.meta.bh||'lubang ini')+' beserta seluruh datanya? Tindakan ini tidak bisa dibatalkan.','Hapus',function(){
+    (h.photos||[]).forEach(function(p){phDel(p.id)});db.holes=db.holes.filter(function(x){return x.id!==h.id});
+    if(!db.holes.length){db.holes.push(newHole())}
+    db.active=db.holes[0].id;save();fillAll();resetForms();showTab('proyek');
+  });
+});
+
+/* ---------- project meta ---------- */
+$$('[data-k]').forEach(function(el){
+  el.addEventListener('input',function(){cur().meta[el.dataset.k]=el.value;save();if(el.dataset.k==='bh')renderHoles();if(el.dataset.k==='er')updateSptLive()});
+  el.addEventListener('change',function(){cur().meta[el.dataset.k]=el.value;save()});
+});
+function fillMeta(){var m=cur().meta;$$('[data-k]').forEach(function(el){var v=m[el.dataset.k];el.value=(v===undefined||v===null)?'':v})}
+$('#gps').addEventListener('click',function(){
+  if(!navigator.geolocation){toast('GPS tidak tersedia di perangkat ini');return}
+  toast('Mencari lokasi...');
+  navigator.geolocation.getCurrentPosition(function(p){
+    var v=p.coords.latitude.toFixed(6)+', '+p.coords.longitude.toFixed(6)+' (+/-'+Math.round(p.coords.accuracy)+' m)';
+    $('#koord').value=v;cur().meta.koordinat=v;
+    if(p.coords.altitude!==null&&!cur().meta.elevasi){cur().meta.elevasi=p.coords.altitude.toFixed(1);fillMeta()}
+    save();toast('Koordinat terisi');
+  },function(){toast('Lokasi tidak bisa diambil. Isi manual.')},{enableHighAccuracy:true,timeout:15000});
+});
+
+/* ---------- groundwater ---------- */
+$('#gw-add').addEventListener('click',function(){
+  var d=num($('#gw-d').value);
+  if(d===null||d<0){toast('Isi kedalaman air dalam meter');return}
+  cur().gw.push({id:uid(),d:d,c:$('#gw-c').value,n:$('#gw-n').value.trim(),at:new Date().toISOString().slice(0,16).replace('T',' ')});
+  $('#gw-d').value='';$('#gw-n').value='';save();renderGw();toast('Pengamatan air ditambahkan');
+});
+function renderGw(){
+  var l=cur().gw;
+  $('#gw-list').innerHTML=l.length?l.map(function(g,i){
+    return '<div class="item"><div class="main"><div class="t">'+f2(g.d)+' m</div><div class="d">'+esc(g.c)+(g.n?' - '+esc(g.n):'')+'</div></div><div class="acts"><button class="btn sm danger" data-del="gw" data-i="'+i+'" type="button">Hapus</button></div></div>';
+  }).join(''):'<div class="empty">Belum ada pengamatan air tanah.</div>';
+}
+
+/* ---------- SPT ---------- */
+var sptEdit=-1;
+function readSpt(){
+  return {depth:$('#spt-depth').value.trim(),b1:$('#spt-b1').value.trim(),b2:$('#spt-b2').value.trim(),b3:$('#spt-b3').value.trim(),
+    ref:$('#spt-ref').checked,refpen:$('#spt-refpen').value.trim(),rec:$('#spt-rec').value.trim(),
+    sampler:$('#spt-sampler').value,note:$('#spt-note').value.trim()};
+}
+function updateSptLive(){
+  var t=readSpt();var er=num(cur().meta.er)||60;
+  $('#spt-refbox').hidden=!t.ref;
+  var any=t.b1!==''||t.b2!==''||t.b3!=='';
+  var warn=[];
+  if(!any){$('#spt-N').textContent='-';$('#spt-N60').textContent='-';$('#spt-hint').textContent='Masukkan jumlah pukulan.';$('#spt-warn').hidden=true;return}
+  var c=sptCalc(t,er);
+  $('#spt-N').textContent=c.ref?'R':c.N;
+  $('#spt-N60').textContent=c.n60===null?'-':Math.round(c.n60*10)/10;
+  var h=c.ref?'Refusal: dicatat sebagai '+c.label+'.':'Pasir: '+sandDens(c.N)+'. Lempung: '+clayCons(c.N)+'. Korelasi empiris Terzaghi dan Peck, bukan pengganti deskripsi visual.';
+  $('#spt-hint').textContent=h;
+  var b=[num(t.b1)||0,num(t.b2)||0,num(t.b3)||0];
+  if(!t.ref&&b.some(function(x){return x>=50}))warn.push('Ada interval dengan 50 pukulan atau lebih. Centang refusal bila 50 pukulan tidak menembus 15 cm.');
+  if(c.total>100)warn.push('Total lebih dari 100 pukulan. D1586 menghentikan uji pada 100 pukulan.');
+  if(num(t.b1)===0&&num(t.b2)===0&&num(t.b3)===0)warn.push('Semua nol: catat sebagai WOH/WOR (sampler turun oleh berat palu atau batang) di catatan.');
+  var w=$('#spt-warn');w.hidden=!warn.length;w.textContent=warn.join(' ');
+}
+['spt-b1','spt-b2','spt-b3','spt-refpen','spt-ref','spt-depth'].forEach(function(id){$('#'+id).addEventListener('input',updateSptLive);$('#'+id).addEventListener('change',updateSptLive)});
+function resetSpt(next){
+  sptEdit=-1;
+  ['b1','b2','b3','refpen','rec','note'].forEach(function(k){$('#spt-'+k).value=''});
+  $('#spt-ref').checked=false;
+  $('#spt-depth').value=next===undefined?'':next;
+  $('#spt-save').textContent='Simpan uji SPT';$('#spt-cancel').hidden=true;updateSptLive();
+}
+$('#spt-cancel').addEventListener('click',function(){var l=cur().spt;var last=l.length?num(l[l.length-1].depth)+1.5:1.5;resetSpt(f2(last));renderSpt()});
+$('#spt-save').addEventListener('click',function(){
+  var t=readSpt();var d=num(t.depth);
+  if(d===null||d<0){toast('Isi kedalaman awal uji');return}
+  if(t.b1===''||t.b2===''||t.b3===''||num(t.b1)===null||num(t.b2)===null||num(t.b3)===null){toast('Isi ketiga interval pukulan (boleh 0)');return}
+  if(t.ref&&num(t.refpen)===null){toast('Isi penetrasi saat refusal (cm)');return}
+  var item={id:sptEdit>=0?cur().spt[sptEdit].id:uid(),depth:t.depth.replace(',','.'),b1:t.b1,b2:t.b2,b3:t.b3,ref:t.ref,refpen:t.refpen,rec:t.rec,sampler:t.sampler,note:t.note};
+  if(sptEdit>=0)cur().spt[sptEdit]=item;else cur().spt.push(item);
+  sortBy(cur().spt,'depth');save();
+  resetSpt(f2(d+1.5));renderSpt();toast('Uji SPT tersimpan');
+});
+function renderSpt(){
+  var l=cur().spt;var er=num(cur().meta.er)||60;
+  $('#spt-list').innerHTML=l.length?l.map(function(t,i){
+    var c=sptCalc(t,er);var d=num(t.depth);
+    return '<div class="item'+(i===sptEdit?' editing':'')+'"><div class="main"><div class="t">'+f2(d)+' - '+f2(d+0.45)+' m &nbsp; N = '+esc(c.label)+'</div><div class="d">'+esc(t.b1+' - '+t.b2+' - '+t.b3)+(c.n60!==null?' | N60 = '+f1(c.n60):'')+(t.rec?' | rec '+esc(t.rec)+' cm':'')+(t.note?' | '+esc(t.note):'')+'</div></div><div class="acts"><button class="btn sm ghost" data-edit="spt" data-i="'+i+'" type="button">Edit</button><button class="btn sm danger" data-del="spt" data-i="'+i+'" type="button">Hapus</button></div></div>';
+  }).join(''):'<div class="empty">Belum ada uji SPT. Isi form di atas lalu simpan.</div>';
+}
+
+/* ---------- SOIL ---------- */
+var sEdit=-1;
+(function initSoilSelects(){
+  var h='<option value="">Pilih simbol...</option>';
+  var groups=[['Kerikil (Gravel)','gravel'],['Pasir (Sand)','sand'],['Lanau (Silt)','silt'],['Lempung (Clay)','clay'],['Organik','organic'],['Gambut','peat']];
+  groups.forEach(function(g){
+    h+='<optgroup label="'+g[0]+'">';
+    Object.keys(USCS).forEach(function(k){if(USCS[k][1]===g[1])h+='<option value="'+k+'">'+k+' - '+USCS[k][0]+'</option>'});
+    h+='</optgroup>';
+  });
+  $('#s-uscs').innerHTML=h;
+  $('#s-moist').innerHTML=opts(MOIST);$('#s-plast').innerHTML=opts(PLAST);
+  $('#s-cons').innerHTML=opts(CONS_FINE);
+  $('#colors').innerHTML=COLORS.map(function(c){return '<option value="'+c+'">'}).join('');
+  $('#c-weath').innerHTML=opts(WEATH);$('#c-str').innerHTML=opts(STR);
+})();
+function onUscs(keep){
+  var s=$('#s-uscs').value;var u=USCS[s];
+  $('#s-name').textContent=u?u[0]:'';
+  var prev=$('#s-cons').value;
+  $('#s-cons').innerHTML=opts(u&&(u[1]==='gravel'||u[1]==='sand')?CONS_COARSE:CONS_FINE);
+  if(keep)$('#s-cons').value=prev;
+  $('#s-plast').disabled=!!u&&(u[1]==='gravel'||u[1]==='sand')&&false;
+}
+$('#s-uscs').addEventListener('change',function(){onUscs(true);soilHint()});
+function soilHint(){
+  var from=num($('#s-from').value),to=num($('#s-to').value);
+  var w=[];
+  if(from!==null&&to!==null&&to<=from)w.push('Kedalaman sampai harus lebih besar dari dari.');
+  var g=num($('#s-g').value),s=num($('#s-s').value),f=num($('#s-f').value);
+  if(g!==null&&s!==null&&f!==null&&Math.abs(g+s+f-100)>5)w.push('Persentase kerikil, pasir, dan halus berjumlah '+(g+s+f)+'%, seharusnya sekitar 100%.');
+  if(from!==null&&to!==null&&to>from){
+    var ns=cur().spt.filter(function(t){var d=num(t.depth);return d>=from&&d<to&&!t.ref});
+    if(ns.length){var avg=ns.reduce(function(a,t){return a+sptCalc(t,60).N},0)/ns.length;
+      w.push('N-SPT rata-rata di interval ini: '+Math.round(avg*10)/10+' (pasir: '+sandDens(avg).toLowerCase()+'; lempung: '+clayCons(avg).toLowerCase()+').')}
+  }
+  var el=$('#s-warn');el.hidden=!w.length;el.textContent=w.join(' ');
+}
+['s-from','s-to','s-g','s-s','s-f'].forEach(function(id){$('#'+id).addEventListener('input',soilHint)});
+function readSoil(){
+  return {from:$('#s-from').value.trim().replace(',','.'),to:$('#s-to').value.trim().replace(',','.'),uscs:$('#s-uscs').value,color:$('#s-color').value.trim(),
+    cons:$('#s-cons').value,moist:$('#s-moist').value,plast:$('#s-plast').value,g:$('#s-g').value.trim(),s:$('#s-s').value.trim(),f:$('#s-f').value.trim(),
+    pp:$('#s-pp').value.trim(),note:$('#s-note').value.trim()};
+}
+function resetSoil(nextFrom){
+  sEdit=-1;
+  $('#s-from').value=nextFrom===undefined?'':nextFrom;$('#s-to').value='';$('#s-uscs').value='';onUscs(false);
+  ['s-color','s-g','s-s','s-f','s-pp','s-note'].forEach(function(id){$('#'+id).value=''});
+  $('#s-cons').value='';$('#s-moist').value='Moist';$('#s-plast').value='';
+  $('#s-save').textContent='Simpan lapisan';$('#s-cancel').hidden=true;soilHint();
+}
+$('#s-cancel').addEventListener('click',function(){resetSoil(lastSoilTo());renderSoil()});
+function lastSoilTo(){var l=cur().soil;return l.length?f2(Math.max.apply(null,l.map(function(s){return num(s.to)||0}))):'0.00'}
+$('#s-save').addEventListener('click',function(){
+  var s=readSoil();var a=num(s.from),b=num(s.to);
+  if(a===null||b===null||b<=a){toast('Isi interval kedalaman dengan benar');return}
+  if(!s.uscs){toast('Pilih simbol USCS');return}
+  var overlap=cur().soil.some(function(o,i){return i!==sEdit&&num(o.from)<b&&num(o.to)>a});
+  s.id=sEdit>=0?cur().soil[sEdit].id:uid();
+  if(sEdit>=0)cur().soil[sEdit]=s;else cur().soil.push(s);
+  sortBy(cur().soil,'from');save();
+  resetSoil(f2(b));renderSoil();toast(overlap?'Tersimpan, tetapi interval tumpang tindih dengan lapisan lain':'Lapisan tersimpan');
+});
+function renderSoil(){
+  var l=cur().soil;
+  $('#s-list').innerHTML=l.length?l.map(function(s,i){
+    var u=USCS[s.uscs];var col=u?FILL[u[1]]:'#ccc';
+    return '<div class="item'+(i===sEdit?' editing':'')+'"><div class="main"><div class="t"><span class="chip" style="background:'+col+'">'+esc(s.uscs)+'</span>'+f2(num(s.from))+' - '+f2(num(s.to))+' m</div><div class="d">'+esc(describe(s))+'</div></div><div class="acts"><button class="btn sm ghost" data-edit="soil" data-i="'+i+'" type="button">Edit</button><button class="btn sm danger" data-del="soil" data-i="'+i+'" type="button">Hapus</button></div></div>';
+  }).join(''):'<div class="empty">Belum ada lapisan. Mulai dari permukaan (0,00 m).</div>';
+}
+
+/* ---------- UDS tube ---------- */
+var uEdit=-1;
+function resetTube(next){uEdit=-1;$('#u-depth').value=next===undefined?'':next;['u-push','u-rec','u-note'].forEach(function(id){$('#'+id).value=''});$('#u-save').textContent='Simpan sampel';$('#u-cancel').hidden=true}
+$('#u-cancel').addEventListener('click',function(){resetTube();renderTube()});
+$('#u-save').addEventListener('click',function(){
+  var d=num($('#u-depth').value);
+  if(d===null||d<0){toast('Isi kedalaman atas sampel');return}
+  var it={id:uEdit>=0?cur().tube[uEdit].id:uid(),depth:String(d),dia:$('#u-dia').value,push:$('#u-push').value.trim(),rec:$('#u-rec').value.trim(),note:$('#u-note').value.trim()};
+  if(uEdit>=0)cur().tube[uEdit]=it;else cur().tube.push(it);
+  sortBy(cur().tube,'depth');save();resetTube();renderTube();toast('Sampel tabung tersimpan');
+});
+function renderTube(){
+  var l=cur().tube;
+  $('#u-list').innerHTML=l.length?l.map(function(u,i){
+    var p=num(u.push),r=num(u.rec);
+    return '<div class="item'+(i===uEdit?' editing':'')+'"><div class="main"><div class="t">UD '+f2(num(u.depth))+' m</div><div class="d">'+esc(u.dia)+(p!==null?' | tekan '+p+' cm':'')+(r!==null?' | rec '+r+' cm'+(p>0?' ('+Math.round(r/p*100)+'%)':''):'')+(u.note?' | '+esc(u.note):'')+'</div></div><div class="acts"><button class="btn sm ghost" data-edit="tube" data-i="'+i+'" type="button">Edit</button><button class="btn sm danger" data-del="tube" data-i="'+i+'" type="button">Hapus</button></div></div>';
+  }).join(''):'';
+}
+
+/* ---------- CORE ---------- */
+var cEdit=-1;
+function readCore(){return {from:$('#c-from').value.trim().replace(',','.'),to:$('#c-to').value.trim().replace(',','.'),type:$('#c-type').value.trim(),pieces:$('#c-pieces').value.trim(),rec:$('#c-rec').value.trim(),frac:$('#c-frac').value.trim(),weath:$('#c-weath').value,str:$('#c-str').value,note:$('#c-note').value.trim()}}
+function updateCoreLive(){
+  var c=readCore();var r=coreCalc(c);
+  $('#c-rqd').textContent=r.rqd===null?'-':Math.round(r.rqd)+'%';
+  $('#c-recp').textContent=r.recPct===null?'-':Math.round(r.recPct)+'%';
+  var h='Isi panjang run dan potongan inti.';
+  if(r.run!==null&&r.run<=0)h='Kedalaman sampai harus lebih besar dari dari.';
+  else if(r.run>0){h='Run '+Math.round(r.run)+' cm, '+r.n+' potongan'+(r.rqd!==null?', kelas RQD: '+rqdClass(r.rqd)+'.':'.');
+    if(r.rec!==null&&r.rec>r.run+0.5)h+=' Recovery melebihi panjang run, periksa data.'}
+  $('#c-hint').textContent=h;
+}
+['c-from','c-to','c-pieces','c-rec'].forEach(function(id){$('#'+id).addEventListener('input',updateCoreLive)});
+function resetCore(next){
+  cEdit=-1;$('#c-from').value=next===undefined?'':next;
+  ['c-to','c-type','c-pieces','c-rec','c-frac','c-note'].forEach(function(id){$('#'+id).value=''});
+  $('#c-weath').value='Fresh';$('#c-str').value='';
+  $('#c-save').textContent='Simpan run inti';$('#c-cancel').hidden=true;updateCoreLive();
+}
+$('#c-cancel').addEventListener('click',function(){resetCore();renderCore()});
+$('#c-save').addEventListener('click',function(){
+  var c=readCore();var a=num(c.from),b=num(c.to);
+  if(a===null||b===null||b<=a){toast('Isi interval run dengan benar');return}
+  c.id=cEdit>=0?cur().core[cEdit].id:uid();
+  if(cEdit>=0)cur().core[cEdit]=c;else cur().core.push(c);
+  sortBy(cur().core,'from');save();resetCore(f2(b));renderCore();toast('Run inti tersimpan');
+});
+function renderCore(){
+  var l=cur().core;
+  $('#c-list').innerHTML=l.length?l.map(function(c,i){
+    var r=coreCalc(c);
+    return '<div class="item'+(i===cEdit?' editing':'')+'"><div class="main"><div class="t">'+f2(num(c.from))+' - '+f2(num(c.to))+' m &nbsp; RQD '+(r.rqd===null?'-':Math.round(r.rqd)+'%')+' | REC '+(r.recPct===null?'-':Math.round(r.recPct)+'%')+'</div><div class="d">'+esc([c.type,c.weath,c.str,rqdClass(r.rqd),c.note].filter(Boolean).join(' | '))+'</div></div><div class="acts"><button class="btn sm ghost" data-edit="core" data-i="'+i+'" type="button">Edit</button><button class="btn sm danger" data-del="core" data-i="'+i+'" type="button">Hapus</button></div></div>';
+  }).join(''):'<div class="empty">Belum ada run inti batuan.</div>';
+}
+
+/* ---------- edit / delete delegation ---------- */
+document.addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  var h=cur();
+  if(b.dataset.edit){
+    var i=+b.dataset.i,k=b.dataset.edit;
+    if(k==='spt'){var t=h.spt[i];sptEdit=i;$('#spt-depth').value=t.depth;$('#spt-b1').value=t.b1;$('#spt-b2').value=t.b2;$('#spt-b3').value=t.b3;$('#spt-ref').checked=!!t.ref;$('#spt-refpen').value=t.refpen||'';$('#spt-rec').value=t.rec||'';$('#spt-sampler').value=t.sampler;$('#spt-note').value=t.note||'';$('#spt-save').textContent='Perbarui uji SPT';$('#spt-cancel').hidden=false;updateSptLive();renderSpt();window.scrollTo(0,0)}
+    if(k==='soil'){var s=h.soil[i];sEdit=i;$('#s-from').value=s.from;$('#s-to').value=s.to;$('#s-uscs').value=s.uscs;onUscs(false);$('#s-color').value=s.color;$('#s-cons').value=s.cons;$('#s-moist').value=s.moist;$('#s-plast').value=s.plast;$('#s-g').value=s.g;$('#s-s').value=s.s;$('#s-f').value=s.f;$('#s-pp').value=s.pp;$('#s-note').value=s.note;$('#s-save').textContent='Perbarui lapisan';$('#s-cancel').hidden=false;soilHint();renderSoil();window.scrollTo(0,0)}
+    if(k==='tube'){var u=h.tube[i];uEdit=i;$('#u-depth').value=u.depth;$('#u-dia').value=u.dia;$('#u-push').value=u.push;$('#u-rec').value=u.rec;$('#u-note').value=u.note;$('#u-save').textContent='Perbarui sampel';$('#u-cancel').hidden=false;renderTube();$('#u-depth').scrollIntoView({block:'center'})}
+    if(k==='core'){var c=h.core[i];cEdit=i;$('#c-from').value=c.from;$('#c-to').value=c.to;$('#c-type').value=c.type;$('#c-pieces').value=c.pieces;$('#c-rec').value=c.rec;$('#c-frac').value=c.frac;$('#c-weath').value=c.weath;$('#c-str').value=c.str;$('#c-note').value=c.note;$('#c-save').textContent='Perbarui run inti';$('#c-cancel').hidden=false;updateCoreLive();renderCore();window.scrollTo(0,0)}
+  }
+  if(b.dataset.del){
+    var j=+b.dataset.i,kk=b.dataset.del;
+    ask('Hapus data ini?','Hapus',function(){
+      h[kk].splice(j,1);
+      if(kk==='spt'&&sptEdit>=0)resetSpt('');if(kk==='soil'&&sEdit>=0)resetSoil('');if(kk==='tube'&&uEdit>=0)resetTube();if(kk==='core'&&cEdit>=0)resetCore();
+      save();renderAll();
+    });
+  }
+  if(b.dataset.themeSet){setTheme(b.dataset.themeSet)}
+});
+
+/* ---------- theme ---------- */
+function setTheme(t){
+  if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);
+  try{localStorage.setItem(KEY+'.theme',t)}catch(e){}
+}
+try{var th=localStorage.getItem(KEY+'.theme');if(th&&th!=='auto')document.documentElement.setAttribute('data-theme',th)}catch(e){}
+
+/* ---------- report ---------- */
+function renderReport(){
+  var h=cur(),m=h.meta;
+  var maxD=Math.max(1,num(m.total)||0);
+  h.soil.forEach(function(s){maxD=Math.max(maxD,num(s.to)||0)});
+  h.core.forEach(function(c){maxD=Math.max(maxD,num(c.to)||0)});
+  h.spt.forEach(function(t){maxD=Math.max(maxD,(num(t.depth)||0)+0.45)});
+  h.tube.forEach(function(u){maxD=Math.max(maxD,(num(u.depth)||0)+(num(u.push)||0)/100)});
+  h.gw.forEach(function(g){maxD=Math.max(maxD,g.d)});
+  var D=Math.ceil(maxD);
+  var sc=D>30?24:D>15?32:40;
+  var top=44,W=720,H=top+D*sc+16;
+  var X={r:44,s0:50,s1:126,u0:130,u1:148,n0:160,n1:440,c0:460,c1:714};
+  var nsc=(X.n1-X.n0)/50, csc=(X.c1-X.c0)/100;
+  var y=function(d){return top+d*sc};
+  var step=D>40?5:D>20?2:1;
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Profil bor '+esc(m.bh)+'" xmlns="http://www.w3.org/2000/svg">';
+  svg+='<defs>'
+   +'<pattern id="pg" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="2.6" fill="none" stroke="#000" stroke-opacity=".45"/><circle cx="10.5" cy="10" r="2" fill="none" stroke="#000" stroke-opacity=".45"/></pattern>'
+   +'<pattern id="ps" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r=".8" fill="#000" fill-opacity=".5"/><circle cx="4.5" cy="4.5" r=".8" fill="#000" fill-opacity=".5"/></pattern>'
+   +'<pattern id="pm" width="10" height="6" patternUnits="userSpaceOnUse"><path d="M1 3h5" stroke="#000" stroke-opacity=".45"/></pattern>'
+   +'<pattern id="pc" width="8" height="6" patternUnits="userSpaceOnUse"><path d="M0 3h8" stroke="#000" stroke-opacity=".4"/></pattern>'
+   +'<pattern id="po" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M2 5h6M5 2v6" stroke="#000" stroke-opacity=".4"/></pattern>'
+   +'<pattern id="pr" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M0 10L10 0" stroke="#000" stroke-opacity=".45"/></pattern>'
+   +'</defs>';
+  var PAT={gravel:'pg',sand:'ps',silt:'pm',clay:'pc',organic:'po',peat:'po',rock:'pr'};
+  // headers
+  svg+='<text class="svgt" x="'+X.r+'" y="22" text-anchor="end">m</text>';
+  svg+='<text class="svgt" x="'+((X.s0+X.s1)/2)+'" y="22" text-anchor="middle">USCS</text>';
+  svg+='<text class="svgt" x="'+((X.u0+X.u1)/2)+'" y="22" text-anchor="middle">UD</text>';
+  svg+='<text class="svgt" x="'+((X.n0+X.n1)/2)+'" y="20" text-anchor="middle">N-SPT (pukulan / 30 cm)</text>';
+  svg+='<text class="svgt" x="'+((X.c0+X.c1)/2)+'" y="20" text-anchor="middle">Core: REC (abu) dan RQD (biru), %</text>';
+  for(var n=0;n<=50;n+=10){svg+='<text class="svgm" x="'+(X.n0+n*nsc)+'" y="38" text-anchor="middle">'+n+'</text>'}
+  for(var p=0;p<=100;p+=25){svg+='<text class="svgm" x="'+(X.c0+p*csc)+'" y="38" text-anchor="middle">'+p+'</text>'}
+  // grid
+  for(var d=0;d<=D;d++){svg+='<line x1="'+X.r+'" x2="'+W+'" y1="'+y(d)+'" y2="'+y(d)+'" stroke="var(--line)" stroke-width="'+(d%step===0?.9:.4)+'"/>'}
+  for(var d2=0;d2<=D;d2+=step){svg+='<text class="svgt" x="'+(X.r-6)+'" y="'+(y(d2)+4)+'" text-anchor="end">'+d2+'</text>'}
+  for(var n2=0;n2<=50;n2+=10){svg+='<line x1="'+(X.n0+n2*nsc)+'" x2="'+(X.n0+n2*nsc)+'" y1="'+top+'" y2="'+(H-16)+'" stroke="var(--line)" stroke-width=".8"/>'}
+  for(var p2=0;p2<=100;p2+=25){svg+='<line x1="'+(X.c0+p2*csc)+'" x2="'+(X.c0+p2*csc)+'" y1="'+top+'" y2="'+(H-16)+'" stroke="var(--line)" stroke-width=".8"/>'}
+  svg+='<rect x="'+X.s0+'" y="'+top+'" width="'+(X.s1-X.s0)+'" height="'+(D*sc)+'" fill="none" stroke="var(--ink)" stroke-width="1"/>';
+  // strata
+  var used={};
+  h.soil.forEach(function(s){
+    var u=USCS[s.uscs];if(!u)return;var a=num(s.from),b=num(s.to);if(a===null||b===null||b<=a)return;
+    used[u[1]]=1;
+    svg+='<g><title>'+esc(s.uscs+' '+f2(a)+'-'+f2(b)+' m')+'</title><rect x="'+X.s0+'" y="'+y(a)+'" width="'+(X.s1-X.s0)+'" height="'+((b-a)*sc)+'" fill="'+FILL[u[1]]+'" stroke="var(--ink)" stroke-width=".7"/>'
+      +'<rect x="'+X.s0+'" y="'+y(a)+'" width="'+(X.s1-X.s0)+'" height="'+((b-a)*sc)+'" fill="url(#'+PAT[u[1]]+')"/>';
+    if((b-a)*sc>=16)svg+='<text x="'+((X.s0+X.s1)/2)+'" y="'+(y((a+b)/2)+4)+'" text-anchor="middle" font-weight="700" font-size="12" fill="#111" stroke="'+FILL[u[1]]+'" stroke-width="3" paint-order="stroke">'+esc(s.uscs)+'</text>';
+    svg+='</g>';
+  });
+  h.core.forEach(function(c){
+    var a=num(c.from),b=num(c.to);if(a===null||b===null||b<=a)return;used.rock=1;
+    svg+='<g><title>'+esc('Core '+f2(a)+'-'+f2(b)+' m')+'</title><rect x="'+X.s0+'" y="'+y(a)+'" width="'+(X.s1-X.s0)+'" height="'+((b-a)*sc)+'" fill="'+FILL.rock+'" stroke="var(--ink)" stroke-width=".7"/><rect x="'+X.s0+'" y="'+y(a)+'" width="'+(X.s1-X.s0)+'" height="'+((b-a)*sc)+'" fill="url(#pr)"/></g>';
+  });
+  // UD
+  h.tube.forEach(function(u){
+    var a=num(u.depth),l=(num(u.push)||45)/100;if(a===null)return;
+    svg+='<g><title>'+esc('UD '+f2(a)+' m')+'</title><rect x="'+(X.u0+3)+'" y="'+y(a)+'" width="'+(X.u1-X.u0-6)+'" height="'+Math.max(6,l*sc)+'" rx="2" fill="var(--brand)" stroke="var(--ink)" stroke-width=".6"/></g>';
+  });
+  // SPT
+  var er=num(m.er)||60;
+  var pts=h.spt.map(function(t){var c=sptCalc(t,er);return {x:X.n0+Math.min(c.nPlot,50)*nsc,y:y((num(t.depth)||0)+0.225),c:c,d:num(t.depth)}}).sort(function(a,b){return a.y-b.y});
+  if(pts.length>1)svg+='<polyline fill="none" stroke="var(--brand)" stroke-width="1.6" points="'+pts.map(function(q){return q.x+','+q.y}).join(' ')+'"/>';
+  pts.forEach(function(q){
+    if(q.c.ref){svg+='<g><title>'+esc('SPT '+f2(q.d)+' m: '+q.c.label)+'</title><path d="M'+q.x+' '+(q.y-6)+'L'+(q.x+6)+' '+(q.y+5)+'L'+(q.x-6)+' '+(q.y+5)+'Z" fill="var(--danger)"/><text class="svgt" x="'+(q.x-9)+'" y="'+(q.y+4)+'" text-anchor="end" fill="var(--danger)" style="fill:var(--danger)">R</text></g>'}
+    else{svg+='<g><title>'+esc('SPT '+f2(q.d)+' m: N = '+q.c.N)+'</title><circle cx="'+q.x+'" cy="'+q.y+'" r="4.2" fill="var(--surface)" stroke="var(--brand)" stroke-width="2"/><text class="svgt" x="'+(q.x+8)+'" y="'+(q.y+4)+'">'+q.c.N+'</text></g>'}
+  });
+  // core bars
+  h.core.forEach(function(c){
+    var a=num(c.from),b=num(c.to);if(a===null||b===null||b<=a)return;var r=coreCalc(c);
+    var hh=(b-a)*sc;
+    svg+='<g><title>'+esc('Run '+f2(a)+'-'+f2(b)+' m, REC '+(r.recPct===null?'-':Math.round(r.recPct))+'%, RQD '+(r.rqd===null?'-':Math.round(r.rqd))+'%')+'</title>';
+    if(r.recPct!==null)svg+='<rect x="'+X.c0+'" y="'+(y(a)+2)+'" width="'+(r.recPct*csc)+'" height="'+Math.max(2,hh-4)+'" fill="var(--muted)" fill-opacity=".45"/>';
+    if(r.rqd!==null)svg+='<rect x="'+X.c0+'" y="'+(y(a)+hh*0.25)+'" width="'+(r.rqd*csc)+'" height="'+Math.max(2,hh*0.5)+'" fill="var(--brand)"/>';
+    svg+='</g>';
+  });
+  // water
+  var gw=h.gw.length?h.gw[h.gw.length-1]:null;
+  if(gw){var gy=y(gw.d);svg+='<line x1="'+X.r+'" x2="'+W+'" y1="'+gy+'" y2="'+gy+'" stroke="var(--water)" stroke-width="1.8" stroke-dasharray="7 4"/><path d="M'+(X.s1+2)+' '+(gy-7)+'L'+(X.s1+11)+' '+(gy-7)+'L'+(X.s1+6.5)+' '+gy+'Z" fill="var(--water)"/><text x="'+(X.u1+16)+'" y="'+(gy-4)+'" font-size="11" font-weight="600" style="fill:var(--water)">MAT '+f2(gw.d)+' m</text>'}
+  svg+='</svg>';
+
+  // header
+  var rows=[['Proyek',m.proyek],['Lokasi',m.lokasi],['No. lubang bor',m.bh],['Koordinat',m.koordinat],['Elevasi',m.elevasi?m.elevasi+' m':''],['Tanggal',m.mulai+(m.selesai?' s/d '+m.selesai:'')],
+    ['Metode',m.metode+(m.diameter?', O '+m.diameter+' mm':'')],['Rig / pengebor',[m.rig,m.pengebor].filter(Boolean).join(' / ')],
+    ['Palu SPT',m.hammer+', '+m.berat+' kg x '+m.tinggi+' mm, ER '+m.er+'%'],['Logger',m.logger],
+    ['Kedalaman akhir',(m.total||f2(maxD))+' m'],['Muka air tanah',gw?f2(gw.d)+' m ('+gw.c+')':'-']];
+  var head=logoHTML()+'<div class="rep-head">'+rows.map(function(r){return '<div><b>'+esc(r[0])+'</b><span>'+esc(r[1]||'-')+'</span></div>'}).join('')+'</div>';
+
+  var leg='<div class="legend">'+Object.keys(used).map(function(k){return '<span><i style="background:'+FILL[k]+'"></i>'+GROUP_LABEL[k]+'</span>'}).join('')+'<span><i style="background:var(--brand)"></i>UD tube / RQD</span><span><i style="background:var(--water)"></i>MAT</span></div>';
+
+  // strata table
+  var tb='';
+  var allRows=[];
+  h.soil.forEach(function(s){allRows.push({a:num(s.from),b:num(s.to),sym:s.uscs,desc:describe(s),kind:'soil'})});
+  h.core.forEach(function(c){var r=coreCalc(c);allRows.push({a:num(c.from),b:num(c.to),sym:'ROCK',desc:[cap(c.type||'Rock'),c.weath?c.weath.toLowerCase():'',c.str,c.frac?c.frac+' natural fractures':'',(r.rqd!==null?'RQD '+Math.round(r.rqd)+'% ('+rqdClass(r.rqd).toLowerCase()+')':''),(r.recPct!==null?'REC '+Math.round(r.recPct)+'%':''),c.note].filter(Boolean).join('; '),kind:'core'})});
+  allRows.sort(function(p,q){return (p.a||0)-(q.a||0)});
+  if(allRows.length){
+    tb='<div class="scroll"><table class="t"><thead><tr><th>Kedalaman (m)</th><th>USCS</th><th>Deskripsi</th><th>N-SPT</th></tr></thead><tbody>'+allRows.map(function(r){
+      var ns=h.spt.filter(function(t){var d=num(t.depth);return d>=r.a&&d<r.b}).map(function(t){return f2(num(t.depth))+': '+sptCalc(t,er).label});
+      return '<tr><td>'+f2(r.a)+' - '+f2(r.b)+'</td><td><b>'+esc(r.sym)+'</b></td><td>'+esc(r.desc)+'</td><td>'+(ns.length?esc(ns.join('; ')):'-')+'</td></tr>';
+    }).join('')+'</tbody></table></div>';
+  }
+  var ud='';
+  if(h.tube.length)ud='<h3 style="margin:16px 0 6px;font-size:16px">Sampel tak terganggu (D1587)</h3><div class="scroll"><table class="t"><thead><tr><th>Kedalaman (m)</th><th>Tabung</th><th>Tekan (cm)</th><th>Recovery (cm)</th><th>Catatan</th></tr></thead><tbody>'+h.tube.map(function(u){return '<tr><td>'+f2(num(u.depth))+'</td><td>'+esc(u.dia)+'</td><td>'+esc(u.push||'-')+'</td><td>'+esc(u.rec||'-')+'</td><td>'+esc(u.note||'')+'</td></tr>'}).join('')+'</tbody></table></div>';
+  var gwt='';
+  if(h.gw.length)gwt='<h3 style="margin:16px 0 6px;font-size:16px">Pengamatan muka air tanah</h3><div class="scroll"><table class="t"><thead><tr><th>Kedalaman (m)</th><th>Waktu</th><th>Catatan</th></tr></thead><tbody>'+h.gw.map(function(g){return '<tr><td>'+f2(g.d)+'</td><td>'+esc(g.c)+'</td><td>'+esc(g.n||'')+'</td></tr>'}).join('')+'</tbody></table></div>';
+  var spt='';
+  if(h.spt.length)spt='<h3 style="margin:16px 0 6px;font-size:16px">Hasil SPT (D1586)</h3><div class="scroll"><table class="t"><thead><tr><th>Kedalaman (m)</th><th>0-15</th><th>15-30</th><th>30-45</th><th>N</th><th>N60</th><th>Rec (cm)</th><th>Catatan</th></tr></thead><tbody>'+h.spt.map(function(t){var c=sptCalc(t,er);return '<tr><td>'+f2(num(t.depth))+' - '+f2(num(t.depth)+0.45)+'</td><td>'+esc(t.b1)+'</td><td>'+esc(t.b2)+'</td><td>'+esc(t.b3)+'</td><td><b>'+esc(c.label)+'</b></td><td>'+(c.n60===null?'-':f1(c.n60))+'</td><td>'+esc(t.rec||'-')+'</td><td>'+esc(t.note||'')+'</td></tr>'}).join('')+'</tbody></table></div>';
+
+  var empty=(!h.soil.length&&!h.spt.length&&!h.core.length)?'<div class="empty" style="margin:10px 0">Belum ada data. Isi tab SPT, Tanah, atau Batuan, lalu kembali ke sini.</div>':'';
+  $('#report').innerHTML=head+empty+leg+'<div class="scroll">'+svg+'</div><h3 style="margin:16px 0 6px;font-size:16px">Stratigrafi</h3>'+(tb||'<div class="empty">Belum ada lapisan.</div>')+spt+ud+gwt+reportPhotosHTML(h)
+   +'<div class="sig"><div>Pengebor: '+esc(m.pengebor||'')+'</div><div>Logger: '+esc(m.logger||'')+'</div></div>';
+}
+
+/* ---------- export ---------- */
+function toCSV(h){
+  var rows=[];function q(v){v=String(v===null||v===undefined?'':v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+  function add(){rows.push(Array.prototype.slice.call(arguments).map(q).join(','))}
+  var m=h.meta,er=num(m.er)||60;
+  add('BOREHOLE LOG');
+  Object.keys(m).forEach(function(k){add(k,m[k])});
+  add('');add('SPT (ASTM D1586)');add('depth_m','blows_0_15','blows_15_30','blows_30_45','N','refusal','N60','recovery_cm','sampler','note');
+  h.spt.forEach(function(t){var c=sptCalc(t,er);add(t.depth,t.b1,t.b2,t.b3,c.label,c.ref?'yes':'no',c.n60===null?'':f1(c.n60),t.rec,t.sampler,t.note)});
+  add('');add('SOIL DESCRIPTION (ASTM D2488 / D2487)');add('from_m','to_m','USCS','group_name','description');
+  h.soil.forEach(function(s){add(s.from,s.to,s.uscs,USCS[s.uscs]?USCS[s.uscs][0]:'',describe(s))});
+  add('');add('UNDISTURBED SAMPLES (ASTM D1587)');add('depth_m','tube','push_cm','recovery_cm','note');
+  h.tube.forEach(function(u){add(u.depth,u.dia,u.push,u.rec,u.note)});
+  add('');add('ROCK CORE (ASTM D2113 / D6032)');add('from_m','to_m','rock','pieces_cm','recovery_pct','RQD_pct','RQD_class','weathering','strength','fractures','note');
+  h.core.forEach(function(c){var r=coreCalc(c);add(c.from,c.to,c.type,c.pieces,r.recPct===null?'':Math.round(r.recPct),r.rqd===null?'':Math.round(r.rqd),rqdClass(r.rqd),c.weath,c.str,c.frac,c.note)});
+  add('');add('PHOTOS (metadata only)');add('kind','box_no','from_m','to_m','category','depth_m','condition','caption','time');
+  (h.photos||[]).forEach(function(p){add(p.kind,p.box||'',p.from||'',p.to||'',p.cat||'',p.depth||'',p.cond||'',p.cap||'',p.at||'')});
+  add('');add('GROUNDWATER');add('depth_m','condition','note','logged_at');
+  h.gw.forEach(function(g){add(g.d,g.c,g.n,g.at)});
+  return rows.join('\n');
+}
+function copyText(text){
+  var done=function(){toast('Tersalin ke clipboard')};
+  var fallback=function(){var ta=$('#m-text');if(ta){ta.focus();ta.select();try{document.execCommand('copy');done()}catch(e){toast('Tekan lama lalu salin manual')}}};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,fallback)}else fallback();
+}
+$('#b-csv').addEventListener('click',function(){
+  var t=toCSV(cur());
+  openModal('Ekspor CSV','<p style="margin:0 0 8px;color:var(--muted);font-size:14.5px">Salin teks ini, lalu tempel ke Excel atau Google Sheets atau berkas .csv.</p><textarea id="m-text" readonly></textarea>',[{label:'Tutup',cls:'ghost'},{label:'Salin',fn:function(){copyText(t);return true}}]);
+  $('#m-text').value=t;
+});
+$('#b-json').addEventListener('click',function(){
+  var t=JSON.stringify(db);
+  openModal('Cadangan dan pemulihan','<p style="margin:0 0 8px;color:var(--muted);font-size:14.5px">Salin teks cadangan dan simpan di catatan atau pesan. Untuk memulihkan, tempel teks cadangan di bawah lalu tekan Pulihkan. Lubang bor dengan ID yang sama akan ditimpa.</p><textarea id="m-text"></textarea>',[
+    {label:'Tutup',cls:'ghost'},
+    {label:'Salin',cls:'ghost',fn:function(){copyText(t);return true}},
+    {label:'Pulihkan',fn:function(){
+      try{
+        var v=JSON.parse($('#m-text').value);
+        var holes=v.holes||(v.meta?[v]:null);
+        if(!holes)throw new Error('format');
+        holes.forEach(function(nh){
+          if(!nh.id||!nh.meta)return;
+          ['spt','soil','tube','core','gw','photos'].forEach(function(k){if(!Array.isArray(nh[k]))nh[k]=[]});
+          var i=db.holes.findIndex(function(x){return x.id===nh.id});
+          if(i>=0)db.holes[i]=nh;else db.holes.push(nh);
+        });
+        db.active=holes[0].id;save();fillAll();resetForms();toast('Data dipulihkan');return false;
+      }catch(e){toast('Teks cadangan tidak valid');return true}
+    }}
+  ]);
+  $('#m-text').value=t;
+});
+$('#b-print').addEventListener('click',function(){
+  try{window.print()}catch(e){toast('Cetak tidak tersedia. Gunakan ekspor CSV.')}
+});
+
+/* ---------- photos ---------- */
+var PH={db:null,mem:{},tc:{}};
+var repPhotos=true;
+function idbOpen(){
+  return new Promise(function(res){
+    try{
+      if(!window.indexedDB)return res(null);
+      var r=indexedDB.open('geobor-photos',1);
+      r.onupgradeneeded=function(){r.result.createObjectStore('p',{keyPath:'id'})};
+      r.onsuccess=function(){res(r.result)};
+      r.onerror=function(){res(null)};
+      r.onblocked=function(){res(null)};
+    }catch(e){res(null)}
+  });
+}
+var phReady=idbOpen().then(function(d){PH.db=d;var n=$('#ph-note');if(n)n.hidden=!!d;return d});
+function phPut(rec){
+  PH.tc[rec.id]=rec.thumb;
+  return phReady.then(function(d){
+    if(!d){PH.mem[rec.id]=rec;return true}
+    return new Promise(function(res){
+      try{var tx=d.transaction('p','readwrite');tx.objectStore('p').put(rec);
+        tx.oncomplete=function(){res(true)};tx.onerror=function(){res(false)};tx.onabort=function(){res(false)};
+      }catch(e){res(false)}
+    });
+  });
+}
+function phGet(id){
+  return phReady.then(function(d){
+    if(PH.mem[id])return PH.mem[id];
+    if(!d)return null;
+    return new Promise(function(res){
+      try{var r=d.transaction('p').objectStore('p').get(id);r.onsuccess=function(){res(r.result||null)};r.onerror=function(){res(null)}}catch(e){res(null)}
+    });
+  });
+}
+function phDel(id){
+  delete PH.tc[id];delete PH.mem[id];
+  return phReady.then(function(d){if(!d)return;try{d.transaction('p','readwrite').objectStore('p').delete(id)}catch(e){}});
+}
+function nowStr(){var d=new Date();function p(n){return n<10?'0'+n:''+n}return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())}
+function readImage(file){
+  return new Promise(function(res,rej){
+    var r=new FileReader();
+    r.onerror=function(){rej(new Error('read'))};
+    r.onload=function(){var im=new Image();im.onload=function(){res(im)};im.onerror=function(){rej(new Error('img'))};im.src=r.result};
+    r.readAsDataURL(file);
+  });
+}
+function drawScaled(im,max,label,q){
+  var iw=im.naturalWidth||im.width||max,ih=im.naturalHeight||im.height||max;
+  var sc=Math.min(1,max/Math.max(iw,ih));
+  var w=Math.max(1,Math.round(iw*sc)),h=Math.max(1,Math.round(ih*sc));
+  var c=document.createElement('canvas');c.width=w;c.height=h;
+  var x=c.getContext('2d');x.drawImage(im,0,0,w,h);
+  if(label&&label.length){
+    var fs=Math.max(14,Math.round(w*0.026)),pad=Math.round(fs*0.6),gap=4;
+    var bh=label.length*(fs+gap)+pad*2-gap;
+    x.fillStyle='rgba(0,0,0,0.62)';x.fillRect(0,h-bh,w,bh);
+    x.fillStyle='#ffffff';x.font='600 '+fs+'px sans-serif';x.textBaseline='top';
+    label.forEach(function(t,i){x.fillText(t,pad,h-bh+pad+i*(fs+gap),w-pad*2)});
+  }
+  return c.toDataURL('image/jpeg',q);
+}
+function photoTitle(p){
+  if(p.kind==='box')return 'Box '+p.box+' | '+f2(num(p.from))+' - '+f2(num(p.to))+' m';
+  return (p.cat||'Foto')+(p.depth!==''&&p.depth!==undefined&&num(p.depth)!==null?' | '+f2(num(p.depth))+' m':'');
+}
+function photoSub(p){return [p.cond,p.cap,p.at].filter(Boolean).join(' | ')}
+function readPhotoForm(kind){
+  var m={kind:kind};
+  if(kind==='act'){
+    m.cat=$('#ac-cat').value;
+    var d=$('#ac-depth').value.trim().replace(',','.');
+    if(d!==''&&num(d)===null){toast('Kedalaman tidak valid');return null}
+    m.depth=d;m.cap=$('#ac-cap').value.trim();m.stamp=$('#ac-stamp').checked;
+  }else{
+    m.box=$('#cb-no').value.trim();
+    var a=num($('#cb-from').value),b=num($('#cb-to').value);
+    if(!m.box){toast('Isi nomor box');return null}
+    if(a===null||b===null||b<=a){toast('Isi interval kedalaman box dengan benar');return null}
+    m.from=String(a);m.to=String(b);m.cond=$('#cb-cond').value;m.cap=$('#cb-cap').value.trim();m.stamp=$('#cb-stamp').checked;
+  }
+  return m;
+}
+async function addPhotos(fileList,kind){
+  var files=Array.prototype.slice.call(fileList||[]).filter(function(f){return !f.type||f.type.indexOf('image/')===0});
+  if(!files.length){toast('Pilih berkas gambar');return}
+  var meta=readPhotoForm(kind);if(!meta)return;
+  var h=cur(),ok=0,fail=0;
+  toast('Memproses foto...');
+  for(var i=0;i<files.length;i++){
+    try{
+      var im=await readImage(files[i]);
+      var at=nowStr(),label=null;
+      if(meta.stamp){
+        label=[[h.meta.proyek,h.meta.bh].filter(Boolean).join(' | ')||'Log bor'];
+        if(kind==='box')label.push('Box '+meta.box+' | '+f2(num(meta.from))+' - '+f2(num(meta.to))+' m'+(meta.cond?' | '+meta.cond:''));
+        else label.push(meta.cat+(meta.depth!==''?' | '+f2(num(meta.depth))+' m':''));
+        label.push(at);
+      }
+      var rec={id:uid(),full:drawScaled(im,1400,label,0.78),thumb:drawScaled(im,320,null,0.7)};
+      var saved=await phPut(rec);
+      if(!saved){fail++;continue}
+      h.photos.push({id:rec.id,kind:kind,cat:meta.cat||'',depth:meta.depth===undefined?'':meta.depth,box:meta.box||'',from:meta.from||'',to:meta.to||'',cond:meta.cond||'',cap:meta.cap,ts:Date.now(),at:at});
+      ok++;
+    }catch(e){fail++}
+  }
+  save();renderPhotos();
+  toast(ok?(ok+' foto tersimpan'+(fail?', '+fail+' gagal':'')):'Foto gagal diproses atau penyimpanan penuh');
+  if(kind==='act')$('#ac-cap').value='';
+}
+function sortedPhotos(h,kind){
+  var l=h.photos.filter(function(p){return p.kind===kind});
+  if(kind==='box')l.sort(function(a,b){return ((num(a.box)||0)-(num(b.box)||0))||((num(a.from)||0)-(num(b.from)||0))||(a.ts-b.ts)});
+  else l.sort(function(a,b){return a.ts-b.ts});
+  return l;
+}
+function cardHTML(p){
+  return '<button class="ph" type="button" data-ph="'+p.id+'"><img data-th="'+p.id+'" alt="'+esc(photoTitle(p))+'"><span class="pt">'+esc(photoTitle(p))+'</span><span class="pd">'+esc(photoSub(p))+'</span></button>';
+}
+function renderPhotos(){
+  var h=cur();
+  var box=sortedPhotos(h,'box'),act=sortedPhotos(h,'act');
+  $('#cb-count').textContent=box.length?'('+box.length+')':'';
+  $('#ac-count').textContent=act.length?'('+act.length+')':'';
+  $('#cb-grid').innerHTML=box.length?box.map(cardHTML).join(''):'<div class="empty" style="grid-column:1/-1">Belum ada foto core box.</div>';
+  $('#ac-grid').innerHTML=act.length?act.map(cardHTML).join(''):'<div class="empty" style="grid-column:1/-1">Belum ada foto aktivitas.</div>';
+  phReady.then(function(){
+    $$('img[data-th]').forEach(function(img){
+      var id=img.dataset.th;
+      if(PH.tc[id]){img.src=PH.tc[id];return}
+      phGet(id).then(function(r){if(r){PH.tc[id]=r.thumb;img.src=r.thumb}});
+    });
+  });
+}
+function dataURLtoFile(u,name){
+  var a=u.split(','),m=a[0].match(/:(.*?);/)[1],b=atob(a[1]),n=b.length,arr=new Uint8Array(n);
+  while(n--)arr[n]=b.charCodeAt(n);
+  return new File([arr],name,{type:m});
+}
+function openPhoto(id){
+  var h=cur();var p=h.photos.filter(function(x){return x.id===id})[0];if(!p)return;
+  openModal(photoTitle(p),
+    '<img class="bigph" id="ph-big" alt="Foto"><p class="hint" style="margin:6px 0 0;font-size:13px;color:var(--muted)">'+esc(p.at||'')+'</p>'
+    +'<label class="field" style="margin-top:8px"><span>Keterangan</span><input id="ph-cap" autocomplete="off"></label>',
+    [
+      {label:'Hapus',cls:'danger',fn:function(){
+        ask('Hapus foto ini?','Hapus',function(){
+          phDel(p.id);h.photos=h.photos.filter(function(x){return x.id!==p.id});save();renderPhotos();if(curTab==='log')renderReport();
+        });
+        return true;
+      }},
+      {label:'Simpan / bagikan',cls:'ghost',fn:function(){
+        phGet(p.id).then(function(r){
+          if(!r)return toast('Foto tidak ditemukan');
+          try{
+            var f=dataURLtoFile(r.full,(p.kind==='box'?'box-'+p.box:'aktivitas')+'-'+p.id+'.jpg');
+            if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:photoTitle(p)}).catch(function(){})}
+            else toast('Tekan lama foto lalu pilih Simpan ke Foto');
+          }catch(e){toast('Tekan lama foto lalu pilih Simpan ke Foto')}
+        });
+        return true;
+      }},
+      {label:'Tutup'}
+    ]);
+  $('#ph-cap').value=p.cap||'';
+  $('#ph-cap').addEventListener('input',function(){p.cap=this.value.trim();save();renderPhotos()});
+  phGet(id).then(function(r){var im=$('#ph-big');if(r&&im)im.src=r.full});
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-ph]');if(b)openPhoto(b.dataset.ph);
+});
+function updateBoxHint(){
+  var h=cur();
+  var no=num($('#cb-no').value),from=num($('#cb-from').value),to=num($('#cb-to').value);
+  var w=[];
+  if(from!==null&&to!==null&&to<=from)w.push('Kedalaman sampai harus lebih besar dari dari.');
+  var prev=null;
+  h.photos.forEach(function(p){
+    if(p.kind!=='box'||no===null||num(p.box)===null||num(p.box)>=no)return;
+    if(!prev||num(p.box)>num(prev.box)||(num(p.box)===num(prev.box)&&num(p.to)>num(prev.to)))prev=p;
+  });
+  if(prev&&from!==null&&Math.abs(num(prev.to)-from)>0.005)w.push('Box '+prev.box+' berakhir di '+f2(num(prev.to))+' m, sedangkan box ini mulai dari '+f2(from)+' m. Periksa jika ada core hilang atau salah ketik.');
+  var el=$('#cb-hint');el.hidden=!w.length;el.textContent=w.join(' ');
+}
+['cb-no','cb-from','cb-to'].forEach(function(id){$('#'+id).addEventListener('input',updateBoxHint)});
+$('#cb-next').addEventListener('click',function(){
+  var n=parseInt($('#cb-no').value,10);
+  $('#cb-no').value=isNaN(n)?1:n+1;$('#cb-from').value=$('#cb-to').value;$('#cb-to').value='';$('#cb-cap').value='';
+  updateBoxHint();
+});
+function initPhotoForm(){
+  var h=cur(),mx=0,last='';
+  h.photos.forEach(function(p){if(p.kind!=='box')return;var n=parseInt(p.box,10);if(!isNaN(n)&&n>=mx){mx=n;last=p.to}});
+  $('#cb-no').value=mx+1;$('#cb-from').value=last!==''?f2(num(last)):'';$('#cb-to').value='';$('#cb-cap').value='';
+  $('#ac-depth').value='';$('#ac-cap').value='';
+  updateBoxHint();
+}
+function wirePh(prefix,kind){
+  $('#'+prefix+'-cam').addEventListener('click',function(){if(readPhotoForm(kind))$('#'+prefix+'-fcam').click()});
+  $('#'+prefix+'-gal').addEventListener('click',function(){if(readPhotoForm(kind))$('#'+prefix+'-fgal').click()});
+  ['fcam','fgal'].forEach(function(sfx){
+    var el=$('#'+prefix+'-'+sfx);
+    el.addEventListener('change',function(){addPhotos(el.files,kind).then(function(){el.value=''},function(){el.value=''})});
+  });
+}
+wirePh('cb','box');wirePh('ac','act');
+$('#b-ph').addEventListener('change',function(){repPhotos=this.checked;renderReport()});
+function fillImgs(){
+  $$('img[data-full]').forEach(function(img){phGet(img.dataset.full).then(function(r){if(r)img.src=r.full})});
+}
+function reportPhotosHTML(h){
+  setTimeout(fillImgs,0);
+  if(!repPhotos||!h.photos||!h.photos.length)return '';
+  var box=sortedPhotos(h,'box'),act=sortedPhotos(h,'act'),s='';
+  function fig(p){return '<figure><img data-full="'+p.id+'" alt="'+esc(photoTitle(p))+'"><figcaption><b>'+esc(photoTitle(p))+'</b>'+(photoSub(p)?'<br>'+esc(photoSub(p)):'')+'</figcaption></figure>'}
+  if(box.length)s+='<h3 style="margin:16px 0 6px;font-size:16px">Dokumentasi core box</h3><div class="rep-ph">'+box.map(fig).join('')+'</div>';
+  if(act.length)s+='<h3 style="margin:16px 0 6px;font-size:16px">Foto aktivitas</h3><div class="rep-ph sm">'+act.map(fig).join('')+'</div>';
+  return s;
+}
+
+/* ---------- logo ---------- */
+var LK=KEY+'.logo';
+var brand={img:'',name:''};
+try{var bb=JSON.parse(localStorage.getItem(LK));if(bb)brand=bb}catch(e){}
+function saveBrand(){try{localStorage.setItem(LK,JSON.stringify(brand))}catch(e){toast('Logo tidak bisa disimpan di perangkat ini')}}
+var defaultMark=null;
+function applyLogo(){
+  var b=$('#logoBtn');
+  if(defaultMark===null)defaultMark=b.innerHTML;
+  if(brand.img){b.innerHTML='<img alt="Logo">';b.firstChild.src=brand.img;b.classList.add('has')}
+  else{b.innerHTML=defaultMark;b.classList.remove('has')}
+}
+function logoHTML(){
+  if(!brand.img&&!brand.name)return '';
+  return '<div class="rep-brand">'+(brand.img?'<img src="'+esc(brand.img)+'" alt="Logo">':'')+(brand.name?'<b>'+esc(brand.name)+'</b>':'')+'</div>';
+}
+$('#logoBtn').addEventListener('click',function(){
+  openModal('Logo dan nama perusahaan','<p style="margin:0 0 10px;color:var(--muted);font-size:14.5px">Pilih gambar logo (PNG, JPG, atau SVG). Logo tampil di header dan di bagian atas laporan cetak. Disimpan di perangkat ini saja.</p><label class="field"><span>Nama perusahaan / instansi</span><input id="brand-name" autocomplete="off"></label><label class="field" style="margin-top:10px"><span>Berkas logo</span><input type="file" id="logo-file" accept="image/*"></label>',[
+    {label:'Kembalikan logo default',cls:'danger',fn:function(){brand.img='';saveBrand();applyLogo();if(curTab==='log')renderReport();toast('Logo default dipulihkan')}},
+    {label:'Selesai',fn:function(){}}
+  ]);
+  $('#brand-name').value=brand.name||'';
+  $('#brand-name').addEventListener('input',function(){brand.name=this.value.trim();saveBrand();if(curTab==='log')renderReport()});
+  $('#logo-file').addEventListener('change',function(){
+    var f=this.files&&this.files[0];if(!f)return;
+    if(!/^image\//.test(f.type)){toast('Pilih berkas gambar');return}
+    var r=new FileReader();
+    r.onload=function(){
+      var im=new Image();
+      im.onload=function(){
+        var iw=im.width||256,ih=im.height||256;
+        var s=Math.min(1,256/Math.max(iw,ih));
+        var w=Math.max(1,Math.round(iw*s)),h=Math.max(1,Math.round(ih*s));
+        var c=document.createElement('canvas');c.width=w;c.height=h;
+        c.getContext('2d').drawImage(im,0,0,w,h);
+        brand.img=c.toDataURL('image/png');saveBrand();applyLogo();
+        if(curTab==='log')renderReport();
+        toast('Logo diganti');
+      };
+      im.onerror=function(){toast('Gambar tidak bisa dibaca')};
+      im.src=r.result;
+    };
+    r.readAsDataURL(f);
+  });
+});
+
+/* ---------- init ---------- */
+function renderAll(){renderGw();renderSpt();renderSoil();renderTube();renderCore();renderPhotos();if(curTab==='log')renderReport()}
+function fillAll(){renderHoles();fillMeta();renderAll();initPhotoForm()}
+function resetForms(){
+  var h=cur();
+  var ls=h.spt.length?num(h.spt[h.spt.length-1].depth)+1.5:1.5;
+  resetSpt(f2(ls));
+  resetSoil(h.soil.length?lastSoilTo():'0.00');
+  resetTube();
+  resetCore(h.core.length?f2(num(h.core[h.core.length-1].to)):'');
+}
+db=load();
+fillAll();resetForms();setStatus();applyLogo();save();
+})();
+</script>
+</body>
+</html>
